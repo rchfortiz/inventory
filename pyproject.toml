@@ -2,14 +2,11 @@
 name = "inventory"
 version = "0.1.0"
 requires-python = ">=3.13"
-dependencies = [
-    "flask>=3.1.0",
-    "uvicorn>=0.32.1",
-]
+dependencies = ["flask>=3.1.0", "uvicorn>=0.32.1"]
 
 [tool.ruff]
 select = ["ALL"]
-ignore = ["D"]
+ignore = ["D", "TD003", "TRY300"]
 pydocstyle.convention = "google"
 
 [tool.pyright]
