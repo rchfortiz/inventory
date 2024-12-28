@@ -73,7 +73,7 @@ def test_update_asset(db: Database, sample_asset_data: AssetData) -> None:
     }
 
     success: bool = db.update_asset(asset_id, updated_data)
-    assert success is True
+    assert success
 
     # Verify the update
     asset: DBRow | None = db.get_asset(asset_id)
@@ -88,7 +88,7 @@ def test_delete_asset(db: Database, sample_asset_data: AssetData) -> None:
     asset_id: int = db.add_asset(sample_asset_data)
 
     success: bool = db.delete_asset(asset_id)
-    assert success is True
+    assert success
 
     # Verify the asset was deleted
     asset: DBRow | None = db.get_asset(asset_id)
@@ -96,6 +96,7 @@ def test_delete_asset(db: Database, sample_asset_data: AssetData) -> None:
 
 
 def test_search_assets(db: Database, sample_asset_data: AssetData) -> None:
+    # sourcery skip: extract-duplicate-method
     """Test searching assets with filters."""
     db.add_asset(sample_asset_data)
 
@@ -141,7 +142,7 @@ def test_check_out_asset(
         expected_return_date=expected_return_date,
         notes="Test checkout",
     )
-    assert success is True
+    assert success
 
     # Verify the checkout
     asset: DBRow | None = db.get_asset(asset_id)
@@ -175,7 +176,7 @@ def test_check_in_asset(
         condition="Good",
         notes="Test check-in",
     )
-    assert success is True
+    assert success
 
     # Verify the check-in
     asset: DBRow | None = db.get_asset(asset_id)
@@ -185,6 +186,7 @@ def test_check_in_asset(
 
 
 def test_generate_asset_report(db: Database, sample_asset_data: AssetData) -> None:
+    # sourcery skip: extract-duplicate-method
     """Test generating different types of asset reports."""
     db.add_asset(sample_asset_data)
 
@@ -209,7 +211,7 @@ def test_settings(db: Database) -> None:
 
     # Test updating setting
     success: bool = db.update_setting("default_loan_period_days", "30")
-    assert success is True
+    assert success
 
     # Verify the update
     new_loan_period: str | None = db.get_setting("default_loan_period_days")
@@ -220,7 +222,7 @@ def test_invalid_operations(db: Database, sample_asset_data: AssetData) -> None:
     """Test handling of invalid operations."""
     # Test updating non-existent asset
     success: bool = db.update_asset(999, sample_asset_data)
-    assert success is False
+    assert not success
 
     # Test deleting non-existent asset
     success = db.delete_asset(999)
