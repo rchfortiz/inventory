@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="jumbotron">
+    <h1 class="display-4">TLE Inventory System</h1>
+    <p class="lead">Manage your inventory and track borrowed items efficiently.</p>
+    <hr class="my-4">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <a href="{{ url_for('main.add_item') }}" class="btn btn-primary mb-2 d-block">Add New Item</a>
+                    <a href="{{ url_for('main.create_slip') }}" class="btn btn-success d-block">Create Borrower's Slip</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Recent Borrows</h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_borrows %}
+                        <div class="list-group">
+                            {% for borrow in recent_borrows %}
+                            <a href="{{ url_for('main.view_slip', slip_id=borrow.id) }}" 
+                               class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">{{ borrow.borrower.name }}</h6>
+                                    <small>{{ borrow.borrow_date.strftime('%Y-%m-%d') }}</small>
+                                </div>
+                                <p class="mb-1">{{ borrow.item.name }} (Qty: {{ borrow.quantity }})</p>
+                                {% if borrow.return_date %}
+                                    <small class="text-success">Returned</small>
+                                {% else %}
+                                    <small class="text-warning">Pending</small>
+                                {% endif %}
+                            </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No recent borrowing activity.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

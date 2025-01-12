@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Create Borrower's Slip</h1>
+
+<form method="POST" class="needs-validation" novalidate>
+    <div class="mb-3">
+        <label for="borrower_name" class="form-label">Borrower Name</label>
+        <input type="text" class="form-control" id="borrower_name" name="borrower_name" required>
+        <div class="invalid-feedback">
+            Please provide a borrower name.
+        </div>
+    </div>
+    
+    <div class="mb-3">
+        <label for="contact" class="form-label">Contact Information</label>
+        <input type="text" class="form-control" id="contact" name="contact">
+    </div>
+    
+    <div class="mb-3">
+        <label for="item_id" class="form-label">Item</label>
+        <select class="form-select" id="item_id" name="item_id" required>
+            <option value="">Select an item</option>
+            {% for item in items %}
+            <option value="{{ item.id }}">{{ item.name }} (Available: {{ item.quantity }})</option>
+            {% endfor %}
+        </select>
+        <div class="invalid-feedback">
+            Please select an item.
+        </div>
+    </div>
+    
+    <div class="mb-3">
+        <label for="quantity" class="form-label">Quantity</label>
+        <input type="number" class="form-control" id="quantity" name="quantity" min="1" required>
+        <div class="invalid-feedback">
+            Please enter a valid quantity.
+        </div>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Create Slip</button>
+</form>
+
+<script>
+// Form validation
+(function () {
+    'use strict'
+    var forms = document.querySelectorAll('.needs-validation')
+    Array.prototype.slice.call(forms).forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
+            form.classList.add('was-validated')
+        }, false)
+    })
+})()
+</script>
+{% endblock %} 

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>Borrower's Slip #{{ slip.id }}</h2>
+    </div>
+    <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <h5>Borrower Information</h5>
+                <p><strong>Name:</strong> {{ slip.borrower.name }}</p>
+                <p><strong>Contact:</strong> {{ slip.borrower.contact or 'N/A' }}</p>
+            </div>
+            <div class="col-md-6">
+                <h5>Item Information</h5>
+                <p><strong>Item:</strong> {{ slip.item.name }}</p>
+                <p><strong>Quantity:</strong> {{ slip.quantity }}</p>
+                <p><strong>Borrow Date:</strong> {{ slip.borrow_date.strftime('%Y-%m-%d %H:%M') }}</p>
+                {% if slip.return_date %}
+                <p><strong>Return Date:</strong> {{ slip.return_date.strftime('%Y-%m-%d %H:%M') }}</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        {% if not slip.return_date %}
+        <form method="POST" action="{{ url_for('main.return_item', slip_id=slip.id) }}" 
+              onsubmit="return confirm('Are you sure you want to mark this item as returned?');">
+            <button type="submit" class="btn btn-success">Mark as Returned</button>
+        </form>
+        {% else %}
+        <div class="alert alert-success">
+            This item has been returned.
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="mt-3">
+    <a href="{{ url_for('main.create_slip') }}" class="btn btn-primary">Create New Slip</a>
+</div>
+{% endblock %} 
