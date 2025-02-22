@@ -1,8 +1,6 @@
 from fastapi import FastAPI
 
-app = FastAPI(docs_url=None)
+from inventory.controllers.dashboard import dashboard_router
 
-
-@app.get("/")
-async def index() -> dict[str, str]:
-    return {"hello": "world"}
+app = FastAPI()
+app.include_router(dashboard_router)
