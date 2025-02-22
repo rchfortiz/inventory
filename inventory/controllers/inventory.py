@@ -1,11 +1,10 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Form, Request
-from fastapi.responses import RedirectResponse
+from fastapi import APIRouter, Body, Request
 
 from inventory.controllers.templates import template
 
-dashboard_router = APIRouter()
+inventory_router = APIRouter()
 
 items = [
     {
@@ -91,11 +90,11 @@ items = [
 ]
 
 
-@dashboard_router.get("/dashboard")
+@inventory_router.get("/inventory")
 async def page(request: Request):
     return template(
         request,
-        "dashboard",
+        "inventory",
         {
             "role": "admin",
             "items": items,
@@ -103,11 +102,11 @@ async def page(request: Request):
     )
 
 
-@dashboard_router.get("/edit/{item_id}")
-async def edit_page(request: Request, item_id: int):
+@inventory_router.get("/items/{item_id}")
+async def item(request: Request, item_id: int):
     return template(
         request,
-        "edit",
+        "item",
         {
             "id": item_id,
             "name": next(filter(lambda i: i["id"] == item_id, items))["name"],
@@ -115,18 +114,18 @@ async def edit_page(request: Request, item_id: int):
     )
 
 
-@dashboard_router.post("/edit/{item_id}")
+@inventory_router.put("/items/{item_id}")
 async def edit(
     item_id: int,
-    name: Annotated[str, Form()],
+    name: Annotated[str, Body(embed=True)],
 ):
     item = next(filter(lambda i: i["id"] == item_id, items))
     item["name"] = name
-    return RedirectResponse("/dashboard", 303)
+    return "OK"
 
 
-@dashboard_router.post("/delete/{item_id}")
+@inventory_router.delete("/items/{item_id}")
 async def delete(item_id: int):
     item = next(filter(lambda i: i["id"] == item_id, items))
     items.remove(item)
-    return RedirectResponse("/dashboard", 303)
+    return "OK"

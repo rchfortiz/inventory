@@ -1,9 +1,9 @@
 {% extends "base.html.jinja" %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}Inventory{% endblock %}
 {% block content %}
   <header>
-    <h2>Dashboard</h2>
+    <h2>Inventory</h2>
   </header>
 
   <main>
@@ -23,7 +23,7 @@
           <td>{{ item.available_quantity }}</td>
           <td>{{ item.borrowed_quantity }}</td>
           <td>{{ item.borrowers }}</td>
-          <td><a href="/edit/{{ item.id }}">Edit</a></td>
+          <td><a href="/items/{{ item.id }}">Edit</a></td>
         </tr>
       {% endfor %}
     </table>
