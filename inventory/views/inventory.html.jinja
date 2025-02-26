@@ -19,9 +19,9 @@
       {% for item in items %}
         <tr>
           <td>{{ item.name }}</td>
-          <td>{{ item.total_quantity }}</td>
-          <td>{{ item.available_quantity }}</td>
-          <td>{{ item.borrowed_quantity }}</td>
+          <td>{{ item.total_qty }}</td>
+          <td>{{ item.available_qty }}</td>
+          <td>{{ item.borrowed_qty }}</td>
           <td>{{ item.borrowers }}</td>
           <td><a href="/items/{{ item.id }}">Edit</a></td>
         </tr>

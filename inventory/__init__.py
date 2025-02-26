@@ -1,6 +1,18 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 
 from inventory.controllers.inventory import inventory_router
+from inventory.database import database, prepare_tables
 
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(_):
+    await database.connect()
+    await prepare_tables()
+    yield
+    await database.disconnect()
+
+
+app = FastAPI(lifespan=lifespan)
 app.include_router(inventory_router)
