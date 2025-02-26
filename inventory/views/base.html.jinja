@@ -18,12 +18,10 @@
       crossorigin="anonymous"
     ></script>
   </head>
-  <body>
-    <div class="container p-5 d-flex flex-column min-vh-100">
-      <div class="d-flex flex-column flex-grow-1 gap-3">
-        {% block content %}{% endblock %}
-      </div>
-      <footer class="text-muted">&copy; Magis Debuggers 2025</footer>
+  <body class="container p-5 d-flex flex-column min-vh-100" data-bs-theme="dark">
+    <div class="d-flex flex-column flex-grow-1 gap-3">
+      {% block content %}{% endblock %}
     </div>
+    <footer class="text-muted">&copy; Magis Debuggers 2025</footer>
   </body>
 </html>
