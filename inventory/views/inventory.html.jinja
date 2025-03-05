@@ -2,8 +2,9 @@
 
 {% block title %}Inventory{% endblock %}
 {% block content %}
-<header>
+<header class="d-flex justify-content-between align-items-center">
   <h2>Inventory</h2>
+  <span class="text-muted">Logged in as {{ role }} <code>{{ username }}</code></span>
 </header>
 
 <main>

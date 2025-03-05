@@ -1,15 +1,14 @@
-from datetime import datetime
-from typing import Optional
+from datetime import UTC, datetime
 
 from inventory.database import database
 
 
 async def get_items():
     query = """
-        SELECT 
-            id, 
-            name, 
-            total_qty, 
+        SELECT
+            id,
+            name,
+            total_qty,
             borrowed_qty,
             (total_qty - borrowed_qty) AS available_qty
         FROM items
@@ -20,10 +19,10 @@ async def get_items():
 
 async def get_item(id: int):
     query = """
-        SELECT 
-            id, 
-            name, 
-            total_qty, 
+        SELECT
+            id,
+            name,
+            total_qty,
             borrowed_qty,
             (total_qty - borrowed_qty) AS available_qty
         FROM items
@@ -34,9 +33,9 @@ async def get_item(id: int):
 
 async def edit_item(
     id: int,
-    name: Optional[str] = None,
-    total_qty: Optional[int] = None,
-    borrowed_qty: Optional[int] = None,
+    name: str | None = None,
+    total_qty: int | None = None,
+    borrowed_qty: int | None = None,
 ):
     # First check if the item exists
     item = await get_item(id)
@@ -56,12 +55,11 @@ async def edit_item(
             raise ValueError("Total quantity cannot be negative")
 
         # If we're also updating borrowed_qty, we'll check constraints after setting both values
-        if borrowed_qty is None:
-            # Only updating total_qty, check against existing borrowed_qty
-            if total_qty < item["borrowed_qty"]:
-                raise ValueError(
-                    f"Total quantity ({total_qty}) cannot be less than borrowed quantity ({item['borrowed_qty']})"
-                )
+        # Only updating total_qty, check against existing borrowed_qty
+        if borrowed_qty is None and total_qty < item["borrowed_qty"]:
+            raise ValueError(
+                f"Total quantity ({total_qty}) cannot be less than borrowed quantity ({item['borrowed_qty']})",
+            )
 
         updates.append("total_qty = :total_qty")
         values["total_qty"] = total_qty
@@ -74,7 +72,7 @@ async def edit_item(
         check_total = total_qty if total_qty is not None else item["total_qty"]
         if borrowed_qty > check_total:
             raise ValueError(
-                f"Borrowed quantity ({borrowed_qty}) cannot exceed total quantity ({check_total})"
+                f"Borrowed quantity ({borrowed_qty}) cannot exceed total quantity ({check_total})",
             )
 
         updates.append("borrowed_qty = :borrowed_qty")
@@ -85,6 +83,7 @@ async def edit_item(
         return item
 
     # Update the item
+    # ruff: noqa: S608
     query = f"""
         UPDATE items
         SET {', '.join(updates)}
@@ -114,7 +113,10 @@ async def delete_item(id: int):
 
 
 async def borrow_item(
-    item_id: int, borrower_name: str, borrower_section: str, amount: int
+    item_id: int,
+    borrower_name: str,
+    borrower_section: str,
+    amount: int,
 ):
     # Check if the item exists and has enough available quantity
     item = await get_item(item_id)
@@ -128,7 +130,7 @@ async def borrow_item(
 
     if amount > available_qty:
         raise ValueError(
-            f"Not enough available quantity. Requested: {amount}, Available: {available_qty}"
+            f"Not enough available quantity. Requested: {amount}, Available: {available_qty}",
         )
 
     # Transaction to ensure data consistency
@@ -139,7 +141,8 @@ async def borrow_item(
             WHERE name = :name AND section = :section
         """
         borrower = await database.fetch_one(
-            borrower_query, values={"name": borrower_name, "section": borrower_section}
+            borrower_query,
+            values={"name": borrower_name, "section": borrower_section},
         )
 
         if borrower:
@@ -163,7 +166,8 @@ async def borrow_item(
             WHERE id = :item_id
         """
         await database.execute(
-            update_item_query, values={"item_id": item_id, "amount": amount}
+            update_item_query,
+            values={"item_id": item_id, "amount": amount},
         )
 
         # Create borrow record
@@ -178,13 +182,13 @@ async def borrow_item(
                 "item_id": item_id,
                 "borrower_id": borrower_id,
                 "amount": amount,
-                "borrowed_at": datetime.now(),
+                "borrowed_at": datetime.now(UTC),
             },
         )
 
     # Return borrow transaction details
     result_query = """
-        SELECT 
+        SELECT
             b.id AS borrow_id,
             b.amount,
             b.borrowed_at,
@@ -207,18 +211,19 @@ async def return_item(item_id: int, borrower_id: int):
     find_borrows_query = """
         SELECT id, amount
         FROM borrows
-        WHERE item_id = :item_id 
+        WHERE item_id = :item_id
           AND borrower_id = :borrower_id
           AND returned_at IS NULL
     """
 
     borrows = await database.fetch_all(
-        find_borrows_query, values={"item_id": item_id, "borrower_id": borrower_id}
+        find_borrows_query,
+        values={"item_id": item_id, "borrower_id": borrower_id},
     )
 
     if not borrows:
         raise ValueError(
-            f"No unreturned borrows found for item_id={item_id} and borrower_id={borrower_id}"
+            f"No unreturned borrows found for item_id={item_id} and borrower_id={borrower_id}",
         )
 
     total_returned = sum(borrow["amount"] for borrow in borrows)
@@ -233,7 +238,7 @@ async def return_item(item_id: int, borrower_id: int):
             WHERE id IN ({})
         """.format(",".join(f":{i}" for i in range(len(borrow_ids))))
 
-        values = {"returned_at": datetime.now()}
+        values = {"returned_at": datetime.now(UTC)}
         for i, borrow_id in enumerate(borrow_ids):
             values[str(i)] = borrow_id
 
@@ -246,12 +251,13 @@ async def return_item(item_id: int, borrower_id: int):
             WHERE id = :item_id
         """
         await database.execute(
-            update_item_query, values={"item_id": item_id, "amount": total_returned}
+            update_item_query,
+            values={"item_id": item_id, "amount": total_returned},
         )
 
     # Return updated borrow records
     get_updated_borrows_query = """
-        SELECT 
+        SELECT
             b.id AS borrow_id,
             b.amount,
             b.borrowed_at,
