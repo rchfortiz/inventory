@@ -1,0 +1,7 @@
+{
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features"
+  },
+  "html.format.indentInnerHtml": true,
+  "html.format.extraLiners": ""
+}

@@ -2,30 +2,33 @@
 
 {% block title %}Inventory{% endblock %}
 {% block content %}
-  <header>
-    <h2>Inventory</h2>
-  </header>
+<header>
+  <h2>Inventory</h2>
+</header>
 
-  <main>
-    <table class="table">
-      <tr>
-        <th>Item</th>
-        <th>Total</th>
-        <th>Available</th>
-        <th>Borrowed</th>
-        <th>Borrowers</th>
-        <th>Actions</th>
-      </tr>
-      {% for item in items %}
-        <tr>
-          <td>{{ item.name }}</td>
-          <td>{{ item.total_qty }}</td>
-          <td>{{ item.available_qty }}</td>
-          <td>{{ item.borrowed_qty }}</td>
-          <td>{{ item.borrowers }}</td>
-          <td><a href="/items/{{ item.id }}">Edit</a></td>
-        </tr>
-      {% endfor %}
-    </table>
-  </main>
+<main>
+  <ul class="list-unstyled d-grid gap-3"
+    style="grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr))">
+    {% for item in items %}
+    <li>
+      <a class="border rounded p-3 bg-body-tertiary item-card text-decoration-none text-body d-block"
+        href="/items/{{ item.id }}">
+        <h5>{{ item.name }}</h5>
+        <span class="text-muted">{{ item.total_qty }} total, {{ item.available_qty }} available, {{
+          item.borrowed_qty }} borrowed</span>
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+</main>
+
+<style>
+  .item-card {
+    transition-duration: 100ms;
+  }
+
+  .item-card:hover {
+    filter: brightness(110%);
+  }
+</style>
 {% endblock %}
