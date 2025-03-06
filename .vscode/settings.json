@@ -1,4 +1,7 @@
 {
+  "files.associations": {
+    "*.html.jinja": "html"
+  },
   "[html]": {
     "editor.defaultFormatter": "vscode.html-language-features"
   },

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from http.client import TEMPORARY_REDIRECT
-from typing import Annotated, Literal
+from typing import Annotated, Literal, NoReturn, cast
 
 import jwt
 from bcrypt import gensalt, hashpw
@@ -30,9 +30,9 @@ def get_user(request: Request) -> User:
     if not isinstance(claims, dict):
         redirect_to_login()
 
-    name = claims.get("name")
-    role = claims.get("role")
-    if name is None or role is None:
+    name = cast(str | None, claims.get("name"))
+    role = cast(str | None, claims.get("role"))
+    if name is None or role not in ("staff", "admin"):
         redirect_to_login()
 
     return User(name, role)
@@ -63,5 +63,5 @@ async def create_user(username: str, password: str, role: Role):
     )
 
 
-def redirect_to_login():
+def redirect_to_login() -> NoReturn:
     raise HTTPException(TEMPORARY_REDIRECT, headers={"Location": "/login"})
