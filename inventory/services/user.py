@@ -4,9 +4,9 @@ from typing import Annotated, Literal, NoReturn, cast
 
 import jwt
 from bcrypt import gensalt, hashpw
+from databases import Database
 from fastapi import Depends, HTTPException, Request
 
-from inventory.database import database
 from inventory.settings import settings
 
 Role = Literal["staff", "admin"]
@@ -50,8 +50,8 @@ GetUserDep = Annotated[User, Depends(get_user_dep)]
 GetAdminDep = Annotated[User, Depends(get_admin_dep)]
 
 
-async def get_user(username: str) -> User | None:
-    user = await database.fetch_one(
+async def get_user(db: Database, username: str) -> User | None:
+    user = await db.fetch_one(
         """
         SELECT name, password_hash, role
         FROM users
@@ -62,10 +62,10 @@ async def get_user(username: str) -> User | None:
     return cast(User, user)
 
 
-async def create_user(username: str, password: str, role: Role):
+async def create_user(db: Database, username: str, password: str, role: Role):
     password_hash = hashpw(password.encode(), gensalt())
 
-    await database.execute(
+    await db.execute(
         """
         INSERT INTO users
             (name, password_hash, role)

@@ -1,9 +1,9 @@
 from datetime import UTC, datetime
 
-from inventory.database import database
+from databases import Database
 
 
-async def get_items():
+async def get_items(db: Database):
     query = """
         SELECT
             id,
@@ -14,10 +14,10 @@ async def get_items():
         FROM items
         ORDER BY name
     """
-    return await database.fetch_all(query)
+    return await db.fetch_all(query)
 
 
-async def get_item(id: int):
+async def get_item(db: Database, id: int):
     query = """
         SELECT
             id,
@@ -28,17 +28,18 @@ async def get_item(id: int):
         FROM items
         WHERE id = :id
     """
-    return await database.fetch_one(query, values={"id": id})
+    return await db.fetch_one(query, values={"id": id})
 
 
 async def edit_item(
+    db: Database,
     id: int,
     name: str | None = None,
     total_qty: int | None = None,
     borrowed_qty: int | None = None,
 ):
     # First check if the item exists
-    item = await get_item(id)
+    item = await get_item(db, id)
     if not item:
         return None
 
@@ -58,7 +59,8 @@ async def edit_item(
         # Only updating total_qty, check against existing borrowed_qty
         if borrowed_qty is None and total_qty < item["borrowed_qty"]:
             raise ValueError(
-                f"Total quantity ({total_qty}) cannot be less than borrowed quantity ({item['borrowed_qty']})",
+                f"Total quantity ({total_qty}) cannot be less than borrowed"
+                f" quantity ({item['borrowed_qty']})",
             )
 
         updates.append("total_qty = :total_qty")
@@ -90,15 +92,15 @@ async def edit_item(
         WHERE id = :id
     """
 
-    await database.execute(query, values=values)
+    await db.execute(query, values=values)
 
     # Return the updated item
-    return await get_item(id)
+    return await get_item(db, id)
 
 
-async def delete_item(id: int):
+async def delete_item(db: Database, id: int):
     # First check if the item exists
-    item = await get_item(id)
+    item = await get_item(db, id)
     if not item:
         return False
 
@@ -107,19 +109,20 @@ async def delete_item(id: int):
         DELETE FROM items
         WHERE id = :id
     """
-    await database.execute(query, values={"id": id})
+    await db.execute(query, values={"id": id})
 
     return True
 
 
 async def borrow_item(
+    db: Database,
     item_id: int,
     borrower_name: str,
     borrower_section: str,
     amount: int,
 ):
     # Check if the item exists and has enough available quantity
-    item = await get_item(item_id)
+    item = await get_item(db, item_id)
     if not item:
         raise ValueError(f"Item with ID {item_id} does not exist")
 
@@ -130,17 +133,17 @@ async def borrow_item(
 
     if amount > available_qty:
         raise ValueError(
-            f"Not enough available quantity. Requested: {amount}, Available: {available_qty}",
+            "Not enough available quantity:" f" Requested {amount}, {available_qty} available.",
         )
 
     # Transaction to ensure data consistency
-    async with database.transaction():
+    async with db.transaction():
         # Get or create borrower
         borrower_query = """
             SELECT id FROM borrowers
             WHERE name = :name AND section = :section
         """
-        borrower = await database.fetch_one(
+        borrower = await db.fetch_one(
             borrower_query,
             values={"name": borrower_name, "section": borrower_section},
         )
@@ -154,7 +157,7 @@ async def borrow_item(
                 VALUES (:name, :section)
                 RETURNING id
             """
-            borrower_id = await database.execute(
+            borrower_id = await db.execute(
                 insert_borrower_query,
                 values={"name": borrower_name, "section": borrower_section},
             )
@@ -165,7 +168,7 @@ async def borrow_item(
             SET borrowed_qty = borrowed_qty + :amount
             WHERE id = :item_id
         """
-        await database.execute(
+        await db.execute(
             update_item_query,
             values={"item_id": item_id, "amount": amount},
         )
@@ -176,7 +179,7 @@ async def borrow_item(
             VALUES (:item_id, :borrower_id, :amount, :borrowed_at)
             RETURNING id
         """
-        borrow_id = await database.execute(
+        borrow_id = await db.execute(
             insert_borrow_query,
             values={
                 "item_id": item_id,
@@ -203,10 +206,10 @@ async def borrow_item(
         WHERE b.id = :borrow_id
     """
 
-    return await database.fetch_one(result_query, values={"borrow_id": borrow_id})
+    return await db.fetch_one(result_query, values={"borrow_id": borrow_id})
 
 
-async def return_item(item_id: int, borrower_id: int):
+async def return_item(db: Database, item_id: int, borrower_id: int):
     # Find all unreturned borrows for this item and borrower
     find_borrows_query = """
         SELECT id, amount
@@ -216,21 +219,21 @@ async def return_item(item_id: int, borrower_id: int):
           AND returned_at IS NULL
     """
 
-    borrows = await database.fetch_all(
+    borrows = await db.fetch_all(
         find_borrows_query,
         values={"item_id": item_id, "borrower_id": borrower_id},
     )
 
     if not borrows:
         raise ValueError(
-            f"No unreturned borrows found for item_id={item_id} and borrower_id={borrower_id}",
+            f"No unreturned borrows found for {item_id=} and {borrower_id=}",
         )
 
     total_returned = sum(borrow["amount"] for borrow in borrows)
     borrow_ids = [borrow["id"] for borrow in borrows]
 
     # Transaction to ensure data consistency
-    async with database.transaction():
+    async with db.transaction():
         # Update borrows to mark as returned
         update_borrows_query = """
             UPDATE borrows
@@ -242,7 +245,7 @@ async def return_item(item_id: int, borrower_id: int):
         for i, borrow_id in enumerate(borrow_ids):
             values[str(i)] = borrow_id
 
-        await database.execute(update_borrows_query, values=values)
+        await db.execute(update_borrows_query, values=values)
 
         # Update item's borrowed quantity
         update_item_query = """
@@ -250,7 +253,7 @@ async def return_item(item_id: int, borrower_id: int):
             SET borrowed_qty = borrowed_qty - :amount
             WHERE id = :item_id
         """
-        await database.execute(
+        await db.execute(
             update_item_query,
             values={"item_id": item_id, "amount": total_returned},
         )
@@ -277,4 +280,4 @@ async def return_item(item_id: int, borrower_id: int):
     for i, borrow_id in enumerate(borrow_ids):
         values[str(i)] = borrow_id
 
-    return await database.fetch_all(get_updated_borrows_query, values=values)
+    return await db.fetch_all(get_updated_borrows_query, values=values)

@@ -5,6 +5,7 @@ from fastapi import APIRouter, Form, Request
 from fastapi.responses import RedirectResponse
 
 from inventory.controllers.templates import template
+from inventory.database import DatabaseDep
 from inventory.services.user import GetAdminDep, Role, create_user
 
 admin_router = APIRouter()
@@ -23,9 +24,10 @@ async def new_user_page(_: GetAdminDep, request: Request):
 @admin_router.post("/admin/new-user")
 async def new_user(
     _: GetAdminDep,
+    db: DatabaseDep,
     username: Annotated[str, Form()],
     password: Annotated[str, Form()],
     role: Annotated[Role, Form()],
 ):
-    await create_user(username, password, role)
+    await create_user(db, username, password, role)
     return RedirectResponse("/admin", SEE_OTHER)

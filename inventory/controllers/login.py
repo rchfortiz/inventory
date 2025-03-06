@@ -7,6 +7,7 @@ from fastapi import APIRouter, Form, Request
 from fastapi.responses import RedirectResponse
 
 from inventory.controllers.templates import template
+from inventory.database import DatabaseDep
 from inventory.services.user import get_user
 from inventory.settings import settings
 
@@ -21,10 +22,11 @@ async def login_page(request: Request):
 @login_router.post("/login")
 async def log_in(
     request: Request,
+    db: DatabaseDep,
     username: Annotated[str, Form()],
     password: Annotated[str, Form()],
 ):
-    user = await get_user(username)
+    user = await get_user(db, username)
     if user is None:
         return template(request, "login", {"error": "Invalid username"})
 

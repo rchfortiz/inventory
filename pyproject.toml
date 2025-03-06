@@ -14,8 +14,11 @@ dependencies = [
     "uvicorn>=0.34.0",
 ]
 
+[dependency-groups]
+dev = ["httpx>=0.28.1", "pytest>=8.3.5"]
+
 [tool.ruff]
-line-length = 120
+line-length = 100
 lint.select = ["ALL"]
 lint.ignore = [
     "D",
@@ -30,6 +33,9 @@ lint.ignore = [
     "COM812",
     "ISC001",
 ]
+per-file-ignores = { "tests/**/*.py" = [
+    "S101", # Allow asserts in tests
+] }
 
 [tool.pyright]
 typeCheckingMode = "strict"
