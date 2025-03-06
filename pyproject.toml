@@ -30,3 +30,7 @@ lint.ignore = [
     "COM812",
     "ISC001",
 ]
+
+[tool.pyright]
+typeCheckingMode = "strict"
+reportUnknownMemberType = "none"

@@ -43,8 +43,8 @@ async def edit_item(
         return None
 
     # Determine which fields to update
-    updates = []
-    values = {"id": id}
+    updates: list[str] = []
+    values: dict[str, int | str] = {"id": id}
 
     if name is not None:
         updates.append("name = :name")
