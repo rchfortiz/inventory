@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS users (
     name          TEXT PRIMARY KEY,
-    role          TEXT NOT NULL CHECK (role IN ('staff', 'admin')),
-    password_hash TEXT NOT NULL
+    password_hash BLOB NOT NULL,
+    role          TEXT NOT NULL CHECK (role IN ('staff', 'admin'))
 );
 
 CREATE TABLE IF NOT EXISTS items (

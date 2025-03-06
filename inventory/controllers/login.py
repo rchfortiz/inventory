@@ -1,5 +1,5 @@
 from http.client import SEE_OTHER
-from typing import Annotated
+from typing import Annotated, Any
 
 import jwt
 from bcrypt import checkpw
@@ -24,7 +24,7 @@ async def log_in(
     username: Annotated[str, Form()],
     password: Annotated[str, Form()],
 ):
-    user = await database.fetch_one(
+    user: Any = await database.fetch_one(
         """
         SELECT name, role, password_hash
         FROM users
@@ -35,11 +35,11 @@ async def log_in(
     if user is None:
         return template(request, "login", {"error": "Invalid username"})
 
-    if checkpw(password.encode(), user.password_hash.encode()):
+    if not checkpw(password.encode(), user.password_hash):
         return template(request, "login", {"error": "Invalid password"})
 
     token = jwt.encode(
-        {"name": username, "role": "staff"},
+        {"name": user.name, "role": user.role},
         settings.jwt_secret_key,
         settings.jwt_algorithm,
     )

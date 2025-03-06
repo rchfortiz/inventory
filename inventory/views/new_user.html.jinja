@@ -1,0 +1,20 @@
+{% extends "base.html.jinja" %}
+
+{% block title %}New user{% endblock %}
+{% block content %}
+<header>
+  <h2>New user</h2>
+</header>
+
+<main>
+  <form method="post">
+    <input class="form-control" name="username" placeholder="Username" />
+    <input class="form-control" name="password" placeholder="Password" type="password" />
+    <select class="form-select" name="role">
+      <option value="staff" selected>Staff</option>
+      <option value="admin">Admin</option>
+    </select>
+    <button class="btn btn-primary">Create</button>
+  </form>
+</main>
+{% endblock %}
