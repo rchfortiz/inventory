@@ -1,5 +1,5 @@
 from http.client import SEE_OTHER
-from typing import Annotated, Any
+from typing import Annotated
 
 import jwt
 from bcrypt import checkpw
@@ -7,7 +7,7 @@ from fastapi import APIRouter, Form, Request
 from fastapi.responses import RedirectResponse
 
 from inventory.controllers.templates import template
-from inventory.database import database
+from inventory.services.user import get_user
 from inventory.settings import settings
 
 login_router = APIRouter()
@@ -24,14 +24,7 @@ async def log_in(
     username: Annotated[str, Form()],
     password: Annotated[str, Form()],
 ):
-    user: Any = await database.fetch_one(
-        """
-        SELECT name, role, password_hash
-        FROM users
-        WHERE name = :name
-        """,
-        {"name": username},
-    )
+    user = await get_user(username)
     if user is None:
         return template(request, "login", {"error": "Invalid username"})
 

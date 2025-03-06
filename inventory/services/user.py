@@ -15,10 +15,11 @@ Role = Literal["staff", "admin"]
 @dataclass(frozen=True)
 class User:
     name: str
+    password_hash: bytes
     role: Role
 
 
-def get_user(request: Request) -> User:
+def get_user_dep(request: Request) -> User:
     token = request.cookies.get("token")
     if token is None:
         redirect_to_login()
@@ -35,18 +36,30 @@ def get_user(request: Request) -> User:
     if name is None or role not in ("staff", "admin"):
         redirect_to_login()
 
-    return User(name, role)
+    return User(name=name, password_hash=b"", role=role)
 
 
-def get_admin(request: Request) -> User:
-    user = get_user(request)
+def get_admin_dep(request: Request) -> User:
+    user = get_user_dep(request)
     if user.role != "admin":
         return redirect_to_login()
     return user
 
 
-GetUserDep = Annotated[User, Depends(get_user)]
-GetAdminDep = Annotated[User, Depends(get_admin)]
+GetUserDep = Annotated[User, Depends(get_user_dep)]
+GetAdminDep = Annotated[User, Depends(get_admin_dep)]
+
+
+async def get_user(username: str) -> User | None:
+    user = await database.fetch_one(
+        """
+        SELECT name, password_hash, role
+        FROM users
+        WHERE name = :name
+        """,
+        {"name": username},
+    )
+    return cast(User, user)
 
 
 async def create_user(username: str, password: str, role: Role):
