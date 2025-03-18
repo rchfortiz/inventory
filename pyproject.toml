@@ -2,9 +2,11 @@
 name = "inventory"
 version = "0.1.0"
 requires-python = ">=3.13"
-
-[dependency-groups]
-dev = ["fastapi[standard]>=0.115.11"]
+dependencies = [
+    "fastapi[standard]>=0.115.11",
+    "pydantic-settings>=2.8.1",
+ "sqlmodel>=0.0.24",
+]
 
 [tool.ruff]
 line-length = 100
