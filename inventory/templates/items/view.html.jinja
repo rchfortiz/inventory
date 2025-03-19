@@ -1,0 +1,46 @@
+{% extends "base.html.jinja" %}
+{% set title = item.name %}
+{% block content %}
+<header class="column is-full">
+  <h1 class="title mb-3">{{ item.name }}</h1>
+  <a href="/items">Back to items</a>
+</header>
+
+<main class="column is-full">
+  <section class="box">
+    <h2 class="title is-4">Actions</h2>
+    {% if item.available_qty > 0 %}
+    <a class="button is-primary" href="/items/{{ item.id }}/borrow">Borrow</a>
+    {% else %}
+    <a class="button is-primary" disabled>Cannot borrow anymore</a>
+    {% endif %}
+    <a class="button is-secondary" href="/items/{{ item.id }}/edit">Edit</a>
+    <a class="button is-danger" href="/items/{{ item.id }}/delete">Delete</a>
+  </section>
+
+  <section class="box">
+    <h2 class="title is-4">Item details</h2>
+    <p>There are <strong>{{ item.total_qty }}</strong> of this item, either borrowed or not.</p>
+    <p>There are <strong>{{ item.available_qty }}</strong> of this item ready to borrow.</p>
+  </section>
+
+  <section class="box">
+    <h2 class="title is-4">Borrows</h2>
+    <ul>
+      {% if item.borrows %}
+        {% for borrow in item.borrows %}
+        <li>
+          <strong>{{ borrow.borrower.name }}</strong>
+          from <strong>{{ borrow.borrower.section }}</strong>
+          borrows <strong>{{ borrow.qty }}</strong> of this item</strong>
+
+          <a class="delete mt-1 ml-1" href="/items/{{ item.id }}/borrows/{{ borrow.id }}/delete"></a>
+        </li>
+        {% endfor %}
+      {% else %}
+      <p>No borrowers yet.</p>
+      {% endif %}
+    </ul>
+  </section>
+</main>
+{% endblock %}

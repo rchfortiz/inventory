@@ -1,0 +1,41 @@
+{% extends "base.html.jinja" %}
+{% set title = "Register" %}
+{% block content %}
+<header class="column is-full">
+  <h1 class="title">Register</h1>
+</header>
+
+<main class="column is-full">
+  {% if error %}
+  <div class="notification is-danger">{{ error }}</div>
+  {% endif %}
+  
+  <form method="post">
+    <div class="field">
+      <label class="label">Username</label>
+      <div class="control">
+        <input class="input" name="username" required>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">Password</label>
+      <div class="control">
+        <input class="input" name="password" type="password" required>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">Role</label>
+      <div class="control select">
+        <select name="role" required>
+          <option value="0">Staff</option>
+          <option value="1">Admin</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="button is-primary">Register</button>
+  </form>
+</main>
+{% endblock %}

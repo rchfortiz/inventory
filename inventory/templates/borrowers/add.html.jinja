@@ -1,0 +1,31 @@
+{% extends "base.html.jinja" %}
+{% set title = "Add a borrower" %}
+{% block content %}
+<header class="column is-full">
+  <h1 class="title mb-3">Add a borrower</h1>
+</header>
+
+<main class="column is-full">
+  {% if error %}
+  <div class="notification is-danger">{{ error }}</div>
+  {% endif %}
+
+  <form method="post">
+    <div class="field">
+      <label class="label">Name</label>
+      <div class="control">
+        <input class="input" name="name" required>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">Section</label>
+      <div class="control">
+        <input class="input" name="section" required>
+      </div>
+    </div>
+
+    <button class="button is-primary">Add</button>
+  </form>
+</main>
+{% endblock %}
