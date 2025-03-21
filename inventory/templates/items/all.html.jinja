@@ -1,7 +1,7 @@
 {% extends "base.html.jinja" %}
 {% set title = "Items" %}
 {% block content %}
-<header class="column is-full level">
+<header class="level is-mobile">
   <div>
     <div>
       <h1 class="title mb-3">Items</h1>
@@ -11,14 +11,15 @@
   <a class="has-text-danger" href="/auth/sign-out">Sign out <code>{{ username }}</code></a>
 </header>
 
-<main class="column is-full fixed-grid has-1-cols has-4-cols-tablet">
+<main class="fixed-grid has-1-cols has-4-cols-tablet">
   <a class="button is-primary mb-5" href="/items/add">Add an item</a>
   <ul class="grid">
     {% for item in items %}
     <li class="cell">
       <a class="box is-hoverable" href="/items/{{ item.id }}">
-        <h2 class="title is-5 mb-2">{{ item.name }}</h2>
-        <h3>{{ item.total_qty }} total, {{ item.available_qty }} available</h3>
+        <h2 class="title is-5">{{ item.name }}</h2>
+        <h3>{{ item.location }}</h3>
+        <h3><strong>{{ item.total_qty }}</strong> total, <strong>{{ item.available_qty }}</strong> available</h3>
       </a>
     </li>
     {% endfor %}

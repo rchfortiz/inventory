@@ -1,11 +1,11 @@
 {% extends "base.html.jinja" %}
 {% set title = "Log in" %}
 {% block content %}
-<header class="column is-full">
+<header>
   <h1 class="title">Log in</h1>
 </header>
 
-<main class="column is-full">
+<main>
   {% if error %}
   <div class="notification is-danger">{{ error }}</div>
   {% endif %}

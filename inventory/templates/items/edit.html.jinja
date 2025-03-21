@@ -1,12 +1,12 @@
 {% extends "base.html.jinja" %}
 {% set title = 'Edit item "' + item.name + '"' %}
 {% block content %}
-<header class="column is-full">
+<header>
   <h1 class="title mb-3">Edit item "{{ item.name }}"</h1>
   <a href="/items/{{ item.id }}">Back to item</a>
 </header>
 
-<main class="column is-full">
+<main>
   <form method="post">
     <div class="field">
       <label class="label">Name</label>

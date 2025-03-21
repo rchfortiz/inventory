@@ -30,7 +30,12 @@ async def add_item(request: Request, db: DBSessionDep, form: AddItemForm) -> Res
         error = "Attempted to add item with zero or negative quantity"
         return render_template(request, "items/add", {"error": error})
 
-    item = Item(name=form.name, total_qty=form.quantity)
+    item = Item(
+        name=form.name,
+        description=form.description,
+        location=form.location,
+        total_qty=form.quantity,
+    )
     db.add(item)
     db.commit()
     return items_redirect

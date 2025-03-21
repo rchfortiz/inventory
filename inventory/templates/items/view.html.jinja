@@ -1,12 +1,12 @@
 {% extends "base.html.jinja" %}
 {% set title = item.name %}
 {% block content %}
-<header class="column is-full">
+<header>
   <h1 class="title mb-3">{{ item.name }}</h1>
   <a href="/items">Back to items</a>
 </header>
 
-<main class="column is-full">
+<main>
   <section class="box">
     <h2 class="title is-4">Actions</h2>
     {% if item.available_qty > 0 %}
@@ -20,8 +20,12 @@
 
   <section class="box">
     <h2 class="title is-4">Item details</h2>
-    <p>There are <strong>{{ item.total_qty }}</strong> of this item, either borrowed or not.</p>
-    <p>There are <strong>{{ item.available_qty }}</strong> of this item ready to borrow.</p>
+    {% if item.description %}
+    <p class="my-2">{{ item.description }}</p>
+    {% endif %}
+    <p>This item is located at <strong>{{ item.location }}</strong>.</p>
+    <p>There are <strong>{{ item.total_qty }}</strong> of this item <strong>either borrowed or not</strong>.</p>
+    <p>There are <strong>{{ item.available_qty }}</strong> of this item <strong>ready to borrow</strong>.</p>
   </section>
 
   <section class="box">
