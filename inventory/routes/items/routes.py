@@ -62,6 +62,8 @@ async def edit_item_page(request: Request, item: ItemDep) -> Response:
 @items_router.post("/{item_id}/edit")
 async def edit_item(db: DBSessionDep, item: ItemDep, form: EditItemForm) -> Response:
     item.name = form.name
+    item.description = form.description
+    item.location = form.location
     db.commit()
     return items_redirect
 

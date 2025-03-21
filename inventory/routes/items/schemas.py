@@ -6,6 +6,8 @@ from pydantic import BaseModel
 
 class EditItemFormData(BaseModel):
     name: str
+    description: str
+    location: str
 
 
 class BorrowItemFormData(BaseModel):
