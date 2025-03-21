@@ -1,0 +1,9 @@
+services:
+  inventory:
+    build: .
+    restart: unless-stopped
+    volumes:
+      - ./inventory.db:/app/inventory.db
+      - ./.env:/app/.env
+    ports:
+      - 8000:8000
