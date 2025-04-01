@@ -17,7 +17,7 @@
       <div class="control select">
         <select name="borrower_id" required>
           {% for borrower in borrowers %}
-            <option value="{{ borrower.id }}">{{ borrower.name }} ({{ borrower.section }})</option>
+          <option value="{{ borrower.id }}">{{ borrower.name }} ({{ borrower.section }})</option>
           {% endfor %}
         </select>
       </div>

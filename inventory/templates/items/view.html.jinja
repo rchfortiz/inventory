@@ -32,15 +32,15 @@
     <h2 class="title is-4">Borrows</h2>
     <ul>
       {% if item.borrows %}
-        {% for borrow in item.borrows %}
-        <li>
-          <strong>{{ borrow.borrower.name }}</strong>
-          from <strong>{{ borrow.borrower.section }}</strong>
-          borrows <strong>{{ borrow.qty }}</strong> of this item</strong>
+      {% for borrow in item.borrows %}
+      <li>
+        <strong>{{ borrow.borrower.name }}</strong>
+        from <strong>{{ borrow.borrower.section }}</strong>
+        borrows <strong>{{ borrow.qty }}</strong> of this item</strong>
 
-          <a class="delete mt-1 ml-1" href="/items/{{ item.id }}/borrows/{{ borrow.id }}/delete"></a>
-        </li>
-        {% endfor %}
+        <a class="delete mt-1 ml-1" href="/items/{{ item.id }}/borrows/{{ borrow.id }}/delete"></a>
+      </li>
+      {% endfor %}
       {% else %}
       <p>No borrowers yet.</p>
       {% endif %}
