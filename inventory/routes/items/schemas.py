@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Annotated
 
 from fastapi import Form
@@ -13,6 +14,7 @@ class EditItemFormData(BaseModel):
 class BorrowItemFormData(BaseModel):
     borrower_id: int
     quantity: int
+    due_date: datetime
 
 
 class AddItemFormData(BaseModel):

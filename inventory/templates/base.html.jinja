@@ -25,6 +25,10 @@
       filter: brightness(110%);
     }
 
+    .border {
+      border: 1px solid var(--bulma-text-25);
+    }
+
     .gap-3 {
       gap: 1rem;
     }
@@ -32,6 +36,13 @@
 </head>
 
 <body class="container p-6 is-flex is-flex-direction-column gap-3 is-multiline">
+  <nav class="is-flex is-justify-content-space-between">
+    <span>Inventory System</span>
+
+    {% if username %}
+    <a class="has-text-danger" href="/auth/sign-out">Sign out <code>{{ username }}</code></a>
+    {% endif %}
+  </nav>
   {% block content %}{% endblock %}
 </body>
 

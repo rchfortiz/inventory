@@ -25,6 +25,13 @@
     </div>
 
     <div class="field">
+      <label class="label">Due date</label>
+      <div class="control">
+        <input class="input" name="due_date" type="date" required>
+      </div>
+    </div>
+
+    <div class="field">
       <label class="label">Quantity</label>
       <div class="control">
         <input class="input" name="quantity" type="number" min="1" max="{{ item.available_qty }}" required>

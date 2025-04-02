@@ -5,15 +5,15 @@ from sqlmodel import select
 
 from inventory.db.connection import DBSessionDep
 from inventory.db.models import Role, User
-from inventory.frontend import register_static_page, render_template
+from inventory.frontend import register_public_static_page, render_public_template
 from inventory.routes.auth.dependencies import AdminDep, StaffDep
 from inventory.routes.auth.schemas import LoginForm, RegisterForm
 from inventory.routes.auth.token import give_token_and_redirect_to_items
 
 auth_router = APIRouter(prefix="/auth")
 
-register_static_page(auth_router, "/login", "auth/login")
-register_static_page(auth_router, "/register", "auth/register")
+register_public_static_page(auth_router, "/login", "auth/login")
+register_public_static_page(auth_router, "/register", "auth/register")
 
 
 @auth_router.post("/login")
@@ -21,11 +21,12 @@ async def login(request: Request, db: DBSessionDep, form: LoginForm) -> Response
     stmt = select(User).where(User.username == form.username)
     user = db.exec(stmt).first()
 
-    if not user:
-        return render_template(request, "auth/login", {"error": "Invalid username or password"})
-
-    if not checkpw(form.password.encode(), user.password_hash):
-        return render_template(request, "auth/login", {"error": "Invalid username or password"})
+    if not user or not checkpw(form.password.encode(), user.password_hash):
+        return render_public_template(
+            request,
+            "auth/login",
+            {"error": "Invalid username or password"},
+        )
 
     return give_token_and_redirect_to_items(user)
 

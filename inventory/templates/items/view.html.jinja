@@ -1,13 +1,13 @@
 {% extends "base.html.jinja" %}
 {% set title = item.name %}
 {% block content %}
-<header>
+<header class="mb-5">
   <h1 class="title mb-3">{{ item.name }}</h1>
   <a href="/items">Back to items</a>
 </header>
 
 <main>
-  <section class="box">
+  <section>
     <h2 class="title is-4">Actions</h2>
     {% if item.available_qty > 0 %}
     <a class="button is-primary" href="/items/{{ item.id }}/borrow">Borrow</a>
@@ -17,8 +17,8 @@
     <a class="button is-secondary" href="/items/{{ item.id }}/edit">Edit</a>
     <a class="button is-danger" href="/items/{{ item.id }}/delete">Delete</a>
   </section>
-
-  <section class="box">
+  <hr>
+  <section>
     <h2 class="title is-4">Item details</h2>
     {% if item.description %}
     <p class="my-2">{{ item.description }}</p>
@@ -27,24 +27,39 @@
     <p>There are <strong>{{ item.total_qty }}</strong> of this item <strong>either borrowed or not</strong>.</p>
     <p>There are <strong>{{ item.available_qty }}</strong> of this item <strong>ready to borrow</strong>.</p>
   </section>
-
-  <section class="box">
+  <hr>
+  <section>
     <h2 class="title is-4">Borrows</h2>
-    <ul>
-      {% if item.borrows %}
-      {% for borrow in item.borrows %}
-      <li>
-        <strong>{{ borrow.borrower.name }}</strong>
-        from <strong>{{ borrow.borrower.section }}</strong>
-        borrows <strong>{{ borrow.qty }}</strong> of this item</strong>
-
-        <a class="delete mt-1 ml-1" href="/items/{{ item.id }}/borrows/{{ borrow.id }}/delete"></a>
-      </li>
-      {% endfor %}
-      {% else %}
-      <p>No borrowers yet.</p>
-      {% endif %}
-    </ul>
+    {% if item.borrows %}
+    <table class="table is-fullwidth">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Section</th>
+          <th>Quantity</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for borrow in item.borrows %}
+        <tr>
+          <td>{{ borrow.borrower.name }}</td>
+          <td>{{ borrow.borrower.section }}</td>
+          <td>{{ borrow.qty }}</td>
+          {% if borrow.is_overdue %}
+          <td><span class="tag is-danger">Overdue since {{ borrow.due_date_str }}</span></td>
+          {% else %}
+          <td><span class="tag is-success">Due on {{ borrow.due_date_str }}</span></td>
+          {% endif %}
+          <td><a href="/items/{{ item.id }}/borrows/{{ borrow.id }}/delete">Return</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p>No borrowers yet.</p>
+    {% endif %}
   </section>
 </main>
 {% endblock %}

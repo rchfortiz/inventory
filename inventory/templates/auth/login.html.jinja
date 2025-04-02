@@ -1,31 +1,33 @@
 {% extends "base.html.jinja" %}
 {% set title = "Log in" %}
 {% block content %}
-<header>
-  <h1 class="title">Log in</h1>
-</header>
+<div class="box" style="max-width: 20rem;">
+  <header class="mb-4">
+    <h1 class="title">Log in</h1>
+  </header>
 
-<main>
-  {% if error %}
-  <div class="notification is-danger">{{ error }}</div>
-  {% endif %}
+  <main>
+    {% if error %}
+    <div class="notification is-danger">{{ error }}</div>
+    {% endif %}
 
-  <form method="post">
-    <div class="field">
-      <label class="label">Username</label>
-      <div class="control">
-        <input class="input" name="username" required>
+    <form method="post">
+      <div class="field">
+        <label class="label">Username</label>
+        <div class="control">
+          <input class="input" name="username" required>
+        </div>
       </div>
-    </div>
 
-    <div class="field">
-      <label class="label">Password</label>
-      <div class="control">
-        <input class="input" name="password" type="password" required>
+      <div class="field">
+        <label class="label">Password</label>
+        <div class="control">
+          <input class="input" name="password" type="password" required>
+        </div>
       </div>
-    </div>
 
-    <button class="button is-primary">Log in</button>
-  </form>
-</main>
+      <button class="button is-primary">Log in</button>
+    </form>
+  </main>
+</div>
 {% endblock %}

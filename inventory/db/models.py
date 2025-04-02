@@ -1,3 +1,4 @@
+from datetime import UTC, datetime
 from enum import IntEnum
 
 from sqlmodel import Field, Relationship, SQLModel
@@ -41,4 +42,14 @@ class Borrow(SQLModel, table=True):
     borrower_id: int = Field(foreign_key="borrower.id")
     item: Item = Relationship(back_populates="borrows")
     borrower: Borrower = Relationship(back_populates="borrows")
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+    due_date: datetime
     qty: int
+
+    @property
+    def is_overdue(self) -> bool:
+        return self.created_at > self.due_date
+
+    @property
+    def due_date_str(self) -> str:
+        return self.due_date.strftime("%b %e, %Y")

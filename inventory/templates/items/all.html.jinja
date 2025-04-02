@@ -8,21 +8,33 @@
       <h2 class="subtitle">There are currently {{ items|length }} items.</h2>
     </div>
   </div>
-  <a class="has-text-danger" href="/auth/sign-out">Sign out <code>{{ username }}</code></a>
 </header>
 
-<main class="fixed-grid has-1-cols has-4-cols-tablet">
+<main>
   <a class="button is-primary mb-5" href="/items/add">Add an item</a>
-  <ul class="grid">
-    {% for item in items %}
-    <li class="cell">
-      <a class="box is-hoverable" href="/items/{{ item.id }}">
-        <h2 class="title is-5">{{ item.name }}</h2>
-        <h3>{{ item.location }}</h3>
-        <h3><strong>{{ item.total_qty }}</strong> total, <strong>{{ item.available_qty }}</strong> available</h3>
-      </a>
-    </li>
-    {% endfor %}
-  </ul>
+  <table class="table is-fullwidth">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Location</th>
+        <th>Status</th>
+        <th>Available</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td><a href="/items/{{ item.id }}">{{ item.name }}</a></td>
+        <td>{{ item.location }}</td>
+        {% if item.available_qty == 0 %}
+        <td><span class="tag is-danger">Unavailable</span></td>
+        {% else %}
+        <td><span class="tag is-success">Available</span></td>
+        {% endif %}
+        <td>{{ item.available_qty }}/{{ item.total_qty }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </main>
 {% endblock %}
