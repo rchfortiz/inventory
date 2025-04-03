@@ -4,4 +4,6 @@ RUN pip install uv
 COPY pyproject.toml .
 RUN uv sync
 COPY . .
-CMD [ "uv", "run", "-m", "fastapi", "run", "inventory" ]
+ENV INV_PORT 8000
+EXPOSE ${INV_PORT}
+CMD [ "sh", "-c", "uv run fastapi run inventory --port ${INV_PORT}" ]
