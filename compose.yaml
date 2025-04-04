@@ -4,8 +4,5 @@ services:
     restart: unless-stopped
     volumes:
       - ./data:/app/data:Z
-    env_file:
-      - .env
-      - stack.env
     ports:
-      - ${INV_PORT:-8000}:${INV_PORT:-8000}
+      - 1773:8000
