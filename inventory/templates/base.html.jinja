@@ -39,8 +39,12 @@
   <nav class="is-flex is-justify-content-space-between">
     <span>Inventory System</span>
 
-    {% if username %}
-    <a class="has-text-danger" href="/auth/sign-out">Sign out <code>{{ username }}</code></a>
+    {% if user %}
+    {% if user.role == 1 %}
+    <a href="/admin">Admin Page</a>
+    {% endif %}
+
+    <a class="has-text-danger" href="/auth/sign-out">Sign out <code>{{ user.username }}</code></a>
     {% endif %}
   </nav>
   {% block content %}{% endblock %}

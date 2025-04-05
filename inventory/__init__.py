@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 
 from inventory.db.connection import create_db_and_tables
+from inventory.routes.admin.routes import admin_router
 from inventory.routes.auth.dependencies import StaffDep
 from inventory.routes.auth.routes import auth_router
 from inventory.routes.borrowers.routes import borrowers_router
@@ -21,6 +22,7 @@ app = FastAPI(lifespan=lifespan)
 app.include_router(auth_router)
 app.include_router(items_router)
 app.include_router(borrowers_router)
+app.include_router(admin_router)
 
 
 @app.get("/")

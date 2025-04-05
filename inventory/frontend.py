@@ -20,7 +20,7 @@ def _render_template(
         return templates.TemplateResponse(
             request,
             f"{name}.html.jinja",
-            {"username": user.username, **(context or {})},
+            {"user": user, **(context or {})},
         )
 
     return inner
