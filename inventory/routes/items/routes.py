@@ -6,9 +6,9 @@ from sqlmodel import select
 
 from inventory.db.connection import DBSessionDep
 from inventory.db.models import Borrow, Borrower, Item
-from inventory.frontend import RenderTemplate, register_static_page
+from inventory.frontend import RenderTemplate
 from inventory.routes import items_redirect
-from inventory.routes.auth.dependencies import get_user
+from inventory.routes.auth.dependencies import AdminDep, get_user
 from inventory.routes.items.dependencies import ItemDep
 from inventory.routes.items.schemas import AddItemForm, BorrowItemForm, EditItemForm
 
@@ -21,11 +21,14 @@ async def items_page(db: DBSessionDep, render_template: RenderTemplate) -> Respo
     return render_template("items/all", {"items": items})
 
 
-register_static_page(items_router, "/add", "items/add")
+@items_router.get("/add")
+async def add_item_page(_: AdminDep, render_template: RenderTemplate) -> Response:
+    return render_template("items/add", {})
 
 
 @items_router.post("/add")
 async def add_item(
+    _: AdminDep,
     db: DBSessionDep,
     form: AddItemForm,
     render_template: RenderTemplate,
@@ -51,7 +54,7 @@ async def item_page(item: ItemDep, render_template: RenderTemplate) -> Response:
 
 
 @items_router.get("/{item_id}/delete")
-async def delete_item(db: DBSessionDep, item: ItemDep) -> Response:
+async def delete_item(_: AdminDep, db: DBSessionDep, item: ItemDep) -> Response:
     db.delete(item)
     db.commit()
 

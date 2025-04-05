@@ -14,8 +14,11 @@
     {% else %}
     <a class="button is-primary" disabled>Cannot borrow anymore</a>
     {% endif %}
+
+    {% if user.role >= 1 %}
     <a class="button is-secondary" href="/items/{{ item.id }}/edit">Edit</a>
     <a class="button is-danger" href="/items/{{ item.id }}/delete">Delete</a>
+    {% endif %}
   </section>
   <hr>
   <section>

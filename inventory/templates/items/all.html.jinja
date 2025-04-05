@@ -11,7 +11,10 @@
 </header>
 
 <main>
+  {% if user.role >= 1 %}
   <a class="button is-primary mb-5" href="/items/add">Add an item</a>
+  {% endif %}
+
   <table class="table is-fullwidth">
     <thead>
       <tr>

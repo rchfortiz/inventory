@@ -26,7 +26,7 @@ def _render_template(
     return inner
 
 
-def render_public_template(request: Request, name: str, context: Context) -> Response:
+def render_public_template(request: Request, name: str, context: Context = None) -> Response:
     return templates.TemplateResponse(request, f"{name}.html.jinja", context or {})
 
 
