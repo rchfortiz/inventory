@@ -19,8 +19,6 @@ def get_user(request: Request) -> TokenClaims:
         raise redirect_to_login
 
     claims = jwt.decode(token, settings.jwt_secret_key, algorithms=[settings.jwt_algorithm])
-    if not isinstance(claims, dict):
-        raise redirect_to_login
 
     try:
         return TokenClaims.model_validate(claims)

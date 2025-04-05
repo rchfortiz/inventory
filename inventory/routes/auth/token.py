@@ -19,6 +19,6 @@ def give_token_and_redirect_to_items(user: User) -> Response:
 
     claims = {"username": user.username, "role": user.role}
     token = jwt.encode(claims, settings.jwt_secret_key, settings.jwt_algorithm)
-    response.set_cookie("token", token, secure=True, httponly=True)
+    response.set_cookie("token", str(token), secure=True, httponly=True)
 
     return response
