@@ -32,16 +32,23 @@
     .gap-3 {
       gap: 1rem;
     }
+
+    .gap-2 {
+      gap: 0.75rem;
+    }
   </style>
 </head>
 
 <body class="container p-6 is-flex is-flex-direction-column gap-3 is-multiline">
-  <nav class="is-flex is-justify-content-space-between">
+  <nav class="is-flex is-justify-content-space-between is-flex-wrap-wrap gap-2">
     <span>Inventory System</span>
 
     {% if user %}
     {% if user.role == 1 %}
-    <a href="/admin">Admin Page</a>
+    <ul class="is-flex gap-3">
+      <li><a href="/items">Items</a></li>
+      <li><a href="/admin">Admin Page</a></li>
+    </ul>
     {% endif %}
 
     <a class="has-text-danger" href="/auth/sign-out">Sign out <code>{{ user.username }}</code></a>
