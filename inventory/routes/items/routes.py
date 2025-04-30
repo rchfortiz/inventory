@@ -142,7 +142,7 @@ async def borrow_item(
     log = Log(
         username=staff.username,
         action=(
-            f"Let borrower {borrower.name} from {borrower.section} (ID {borrower.id})"
+            f"Let borrower {borrower.name} (ID {borrower.id})"
             f" borrow (ID {borrow.id}) {borrow.qty} of {item.name} (ID {item.id})"
         ),
     )

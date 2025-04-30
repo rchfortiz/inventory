@@ -33,7 +33,6 @@ class Item(SQLModel, table=True):
 class Borrower(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
     name: str
-    section: str
     borrows: list["Borrow"] = Relationship(back_populates="borrower")
 
 

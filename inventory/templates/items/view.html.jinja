@@ -39,7 +39,6 @@
       <thead>
         <tr>
           <th>Name</th>
-          <th>Section</th>
           <th>Quantity</th>
           <th>Status</th>
           <th>Actions</th>
@@ -49,7 +48,6 @@
         {% for borrow in item.borrows %}
         <tr>
           <td>{{ borrow.borrower.name }}</td>
-          <td>{{ borrow.borrower.section }}</td>
           <td>{{ borrow.qty }}</td>
           {% if borrow.is_overdue %}
           <td><span class="tag is-danger">Overdue since {{ borrow.due_date_str }}</span></td>

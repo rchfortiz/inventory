@@ -25,7 +25,7 @@ async def add_borrower(
 
     log = Log(
         username=staff.username,
-        action=f"Added borrower {borrower.name} from {borrower.section} (ID {borrower.id})",
+        action=f"Added borrower {borrower.name} (ID {borrower.id})",
     )
     db.add(log)
     db.commit()
