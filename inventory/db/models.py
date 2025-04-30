@@ -19,6 +19,7 @@ class Item(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
     name: str
     description: str
+    category: str
     location: str
     total_qty: int
     borrows: list["Borrow"] = Relationship(back_populates="item")

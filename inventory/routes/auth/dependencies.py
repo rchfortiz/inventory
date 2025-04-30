@@ -18,7 +18,10 @@ def get_user(request: Request) -> TokenClaims:
     if not token:
         raise redirect_to_login
 
-    claims = jwt.decode(token, settings.jwt_secret_key, algorithms=[settings.jwt_algorithm])
+    try:
+        claims = jwt.decode(token, settings.jwt_secret_key, algorithms=[settings.jwt_algorithm])
+    except jwt.InvalidSignatureError as err:
+        raise redirect_to_login from err
 
     try:
         return TokenClaims.model_validate(claims)

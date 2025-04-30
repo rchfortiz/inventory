@@ -20,6 +20,7 @@ class BorrowItemFormData(BaseModel):
 class AddItemFormData(BaseModel):
     name: str
     description: str
+    category: str
     location: str
     quantity: int
 

@@ -17,7 +17,7 @@ items_router = APIRouter(prefix="/items", dependencies=[Depends(get_user)])
 
 @items_router.get("/")
 async def items_page(db: DBSessionDep, render_template: RenderTemplate) -> Response:
-    items = db.exec(select(Item)).all()
+    items = db.exec(select(Item).order_by(Item.category != "Consumable Supplies")).all()
     return render_template("items/all", {"items": items})
 
 
@@ -40,6 +40,7 @@ async def add_item(
     item = Item(
         name=form.name,
         description=form.description,
+        category=form.category,
         location=form.location,
         total_qty=form.quantity,
     )
