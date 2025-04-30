@@ -10,6 +10,7 @@ from inventory.routes.auth.dependencies import StaffDep
 from inventory.routes.auth.routes import auth_router
 from inventory.routes.borrowers.routes import borrowers_router
 from inventory.routes.items.routes import items_router
+from inventory.routes.logs.routes import logs_router
 
 
 @asynccontextmanager
@@ -23,6 +24,7 @@ app.include_router(auth_router)
 app.include_router(items_router)
 app.include_router(borrowers_router)
 app.include_router(admin_router)
+app.include_router(logs_router)
 
 
 @app.get("/")

@@ -1,0 +1,28 @@
+{% extends "base.html.jinja" %}
+{% set title = "Logs"%}
+{% block content %}
+<header>
+    <h1 class="title mb-3">Logs</h1>
+</header>
+
+<main>
+    <table class="table is-fullwidth">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Action</th>
+                <th>At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr>
+                <td><code>{{ log.username }}</code></td>
+                <td>{{ log.action }}</td>
+                <td>{{ log.created_at_str }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</main>
+{% endblock %}

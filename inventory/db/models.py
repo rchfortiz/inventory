@@ -53,4 +53,15 @@ class Borrow(SQLModel, table=True):
 
     @property
     def due_date_str(self) -> str:
-        return self.due_date.strftime("%b %e, %Y")
+        return self.due_date.strftime("%b %e %Y")
+
+
+class Log(SQLModel, table=True):
+    id: int = Field(default=None, primary_key=True)
+    username: str = Field(foreign_key="user.username")
+    action: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+
+    @property
+    def created_at_str(self) -> str:
+        return self.created_at.strftime("%b %e %Y, %l:%S %p")
