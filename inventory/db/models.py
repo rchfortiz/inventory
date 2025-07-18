@@ -1,5 +1,6 @@
 from datetime import UTC, datetime
 from enum import IntEnum
+from zoneinfo import ZoneInfo
 
 from sqlmodel import Field, Relationship, SQLModel
 
@@ -55,11 +56,14 @@ class Borrow(SQLModel, table=True):
         return self.due_date.strftime("%b %e %Y")
 
 
+pht = ZoneInfo("Asia/Manila")
+
+
 class Log(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
     username: str = Field(foreign_key="user.username")
     action: str
-    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+    created_at: datetime = Field(default_factory=lambda: datetime.now(pht))
 
     @property
     def created_at_str(self) -> str:
