@@ -6,7 +6,7 @@ An inventory management system.
 
 ### Docker Compose (recommended)
 
-1. Ensure [Docker](https://docker.com/) and [Docker Compose](https://docs.docker.com/compose/) is installed.
+1. Ensure [Docker](https://docker.com/) and [Docker Compose](https://docs.docker.com/compose/) are installed.
 2. Clone this repository.
 3. Run `docker compose up`
 
