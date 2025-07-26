@@ -7,10 +7,11 @@ from fastapi import Depends, HTTPException, Request
 from pydantic import ValidationError
 
 from inventory.db.models import Role
-from inventory.routes.auth.token import TokenClaims
 from inventory.settings import settings
 
-redirect_to_login = HTTPException(HTTPStatus.SEE_OTHER, headers={"Location": "/auth/login"})
+from .token import TokenClaims
+
+redirect_to_login = HTTPException(HTTPStatus.SEE_OTHER, headers={"Location": "/user/login"})
 
 
 def get_user(request: Request) -> TokenClaims:
@@ -39,5 +40,5 @@ def get_user_with_role(role: Role) -> Callable[[Request], TokenClaims]:
     return inner
 
 
-StaffDep = Annotated[TokenClaims, Depends(get_user_with_role(Role.STAFF))]
-AdminDep = Annotated[TokenClaims, Depends(get_user_with_role(Role.ADMIN))]
+Staff = Annotated[TokenClaims, Depends(get_user_with_role(Role.STAFF))]
+Admin = Annotated[TokenClaims, Depends(get_user_with_role(Role.ADMIN))]

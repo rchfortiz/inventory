@@ -4,13 +4,12 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 
-from inventory.db.connection import create_db_and_tables
-from inventory.routes.admin.routes import admin_router
-from inventory.routes.auth.dependencies import StaffDep
-from inventory.routes.auth.routes import auth_router
-from inventory.routes.borrowers.routes import borrowers_router
-from inventory.routes.items.routes import items_router
-from inventory.routes.logs.routes import logs_router
+from .admin import admin_router
+from .borrower import borrower_router
+from .db.connection import create_db_and_tables
+from .item import item_router
+from .log import log_router
+from .user import Staff, user_router
 
 
 @asynccontextmanager
@@ -20,13 +19,13 @@ async def lifespan(_: FastAPI) -> AsyncGenerator[None]:
 
 
 app = FastAPI(lifespan=lifespan)
-app.include_router(auth_router)
-app.include_router(items_router)
-app.include_router(borrowers_router)
+app.include_router(user_router)
+app.include_router(item_router)
+app.include_router(borrower_router)
 app.include_router(admin_router)
-app.include_router(logs_router)
+app.include_router(log_router)
 
 
 @app.get("/")
-async def index(_: StaffDep) -> RedirectResponse:
+async def index(_: Staff) -> RedirectResponse:
     return RedirectResponse("/items")

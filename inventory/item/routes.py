@@ -1,36 +1,47 @@
+from datetime import datetime
 from http import HTTPStatus
+from typing import Annotated
 
-from fastapi import APIRouter, Depends, Response
+from fastapi import APIRouter, Form, Response
 from fastapi.responses import RedirectResponse
+from pydantic import BaseModel
 from sqlmodel import select
 
-from inventory.db.connection import DBSessionDep
+from inventory.db.connection import DBSession
 from inventory.db.models import Borrow, Borrower, Item, Log
-from inventory.frontend import RenderTemplate
-from inventory.routes import items_redirect
-from inventory.routes.auth.dependencies import AdminDep, StaffDep, get_user
-from inventory.routes.items.dependencies import ItemDep
-from inventory.routes.items.schemas import AddItemForm, BorrowItemForm, EditItemForm
+from inventory.templates.private import RenderTemplate
+from inventory.user import Admin, Staff
 
-items_router = APIRouter(prefix="/items", dependencies=[Depends(get_user)])
+from .deps import ItemDep
+from .redirect import redirect_to_items
+
+item_router = APIRouter(prefix="/items")
 
 
-@items_router.get("/")
-async def items_page(db: DBSessionDep, render_template: RenderTemplate) -> Response:
-    items = db.exec(select(Item).order_by(Item.category != "Consumable Supplies")).all()
+@item_router.get("/")
+async def items_page(_: Staff, db: DBSession, render_template: RenderTemplate) -> Response:
+    items = db.exec(select(Item).order_by(Item.category != "Consumable Supplies")).all()  # pyright: ignore[reportArgumentType]
     return render_template("items/all", {"items": items})
 
 
-@items_router.get("/add")
-async def add_item_page(_: AdminDep, render_template: RenderTemplate) -> Response:
+@item_router.get("/add")
+async def add_item_page(_: Admin, render_template: RenderTemplate) -> Response:
     return render_template("items/add", {})
 
 
-@items_router.post("/add")
+class AddItem(BaseModel):
+    name: str
+    description: str
+    category: str
+    location: str
+    quantity: int
+
+
+@item_router.post("/add")
 async def add_item(
-    admin: AdminDep,
-    db: DBSessionDep,
-    form: AddItemForm,
+    admin: Admin,
+    db: DBSession,
+    form: Annotated[AddItem, Form()],
     render_template: RenderTemplate,
 ) -> Response:
     if form.quantity < 1:
@@ -51,16 +62,16 @@ async def add_item(
     db.add(log)
     db.commit()
 
-    return items_redirect
+    return redirect_to_items
 
 
-@items_router.get("/{item_id}")
+@item_router.get("/{item_id}")
 async def item_page(item: ItemDep, render_template: RenderTemplate) -> Response:
     return render_template("items/view", {"item": item})
 
 
-@items_router.get("/{item_id}/delete")
-async def delete_item(admin: AdminDep, db: DBSessionDep, item: ItemDep) -> Response:
+@item_router.get("/{item_id}/delete")
+async def delete_item(admin: Admin, db: DBSession, item: ItemDep) -> Response:
     db.delete(item)
     db.commit()
 
@@ -68,20 +79,26 @@ async def delete_item(admin: AdminDep, db: DBSessionDep, item: ItemDep) -> Respo
     db.add(log)
     db.commit()
 
-    return items_redirect
+    return redirect_to_items
 
 
-@items_router.get("/{item_id}/edit")
+@item_router.get("/{item_id}/edit")
 async def edit_item_page(item: ItemDep, render_template: RenderTemplate) -> Response:
     return render_template("items/edit", {"item": item})
 
 
-@items_router.post("/{item_id}/edit")
+class EditItem(BaseModel):
+    name: str
+    description: str
+    location: str
+
+
+@item_router.post("/{item_id}/edit")
 async def edit_item(
-    db: DBSessionDep,
-    staff: StaffDep,
+    db: DBSession,
+    staff: Staff,
     item: ItemDep,
-    form: EditItemForm,
+    form: Annotated[EditItem, Form()],
 ) -> Response:
     item.name = form.name
     item.description = form.description
@@ -92,12 +109,12 @@ async def edit_item(
     db.add(log)
     db.commit()
 
-    return items_redirect
+    return redirect_to_items
 
 
-@items_router.get("/{item_id}/borrow")
+@item_router.get("/{item_id}/borrow")
 async def borrow_item_page(
-    db: DBSessionDep,
+    db: DBSession,
     item: ItemDep,
     render_template: RenderTemplate,
 ) -> Response:
@@ -105,12 +122,18 @@ async def borrow_item_page(
     return render_template("items/borrow", {"item": item, "borrowers": borrowers})
 
 
-@items_router.post("/{item_id}/borrow")
+class BorrowItem(BaseModel):
+    borrower_id: int
+    quantity: int
+    due_date: datetime
+
+
+@item_router.post("/{item_id}/borrow")
 async def borrow_item(
-    db: DBSessionDep,
-    staff: StaffDep,
+    db: DBSession,
+    staff: Staff,
     item: ItemDep,
-    form: BorrowItemForm,
+    form: Annotated[BorrowItem, Form()],
     render_template: RenderTemplate,
 ) -> Response:
     borrowers = db.exec(select(Borrower)).all()
@@ -152,8 +175,8 @@ async def borrow_item(
     return RedirectResponse(f"/items/{item.id}", HTTPStatus.SEE_OTHER)
 
 
-@items_router.get("/{item_id}/borrows/{borrow_id}/delete")
-async def return_item(db: DBSessionDep, staff: StaffDep, item: ItemDep, borrow_id: int) -> Response:
+@item_router.get("/{item_id}/borrows/{borrow_id}/delete")
+async def return_item(db: DBSession, staff: Staff, item: ItemDep, borrow_id: int) -> Response:
     stmt = select(Borrow).where(Borrow.id == borrow_id)
     borrow = db.exec(stmt).first()
     if borrow:

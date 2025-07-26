@@ -3,21 +3,21 @@ from typing import Annotated
 from fastapi import APIRouter, Form
 from fastapi.responses import RedirectResponse
 
-from inventory.db.connection import DBSessionDep
+from inventory.db.connection import DBSession
 from inventory.db.models import Borrower, Log
-from inventory.frontend import register_static_page
-from inventory.routes import items_redirect
-from inventory.routes.auth.dependencies import StaffDep
+from inventory.item import redirect_to_items
+from inventory.templates.private import register_static_page
+from inventory.user import Staff
 
-borrowers_router = APIRouter(prefix="/borrowers")
+borrower_router = APIRouter(prefix="/borrower")
 
-register_static_page(borrowers_router, "/add", "borrowers/add")
+register_static_page(borrower_router, "/add", "borrowers/add")
 
 
-@borrowers_router.post("/add")
+@borrower_router.post("/add")
 async def add_borrower(
-    db: DBSessionDep,
-    staff: StaffDep,
+    staff: Staff,
+    db: DBSession,
     borrower: Annotated[Borrower, Form()],
 ) -> RedirectResponse:
     db.add(borrower)
@@ -30,4 +30,4 @@ async def add_borrower(
     db.add(log)
     db.commit()
 
-    return items_redirect
+    return redirect_to_items

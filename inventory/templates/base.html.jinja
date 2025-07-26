@@ -48,11 +48,11 @@
     <ul class="is-flex gap-3">
       <li><a href="/items">Items</a></li>
       <li><a href="/admin">Admin Page</a></li>
-      <li><a href="/logs">Logs</a></li>
+      <li><a href="/log">Logs</a></li>
     </ul>
     {% endif %}
 
-    <a class="has-text-danger" href="/auth/sign-out">Sign out <code>{{ user.username }}</code></a>
+    <a class="has-text-danger" href="/user/sign-out">Sign out <code>{{ user.username }}</code></a>
     {% endif %}
   </nav>
   {% block content %}{% endblock %}

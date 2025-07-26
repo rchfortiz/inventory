@@ -1,16 +1,17 @@
 from http import HTTPStatus
+from typing import Annotated
 
 from bcrypt import gensalt, hashpw
-from fastapi import APIRouter, Response
+from fastapi import APIRouter, Form, Response
 from fastapi.responses import RedirectResponse
+from pydantic import BaseModel
 from sqlalchemy.exc import IntegrityError
 from sqlmodel import select
 
-from inventory.db.connection import DBSessionDep
-from inventory.db.models import User
-from inventory.frontend import RenderTemplate, register_static_page
-from inventory.routes.admin.schemas import NewUserForm
-from inventory.routes.auth.dependencies import AdminDep
+from inventory.db.connection import DBSession
+from inventory.db.models import Role, User
+from inventory.templates.private import RenderTemplate, register_static_page
+from inventory.user import Admin
 
 admin_router = APIRouter(prefix="/admin")
 
@@ -19,19 +20,25 @@ register_static_page(admin_router, "/new-user", "admin/new_user")
 
 @admin_router.get("")
 async def index(
-    _: AdminDep,
-    db: DBSessionDep,
+    _: Admin,
+    db: DBSession,
     render_template: RenderTemplate,
 ) -> Response:
     users = db.exec(select(User)).all()
     return render_template("admin/index", {"users": users})
 
 
+class NewUser(BaseModel):
+    username: str
+    password: str
+    role: Role
+
+
 @admin_router.post("/new-user")
 async def new_user(
-    _: AdminDep,
-    db: DBSessionDep,
-    form: NewUserForm,
+    _: Admin,
+    db: DBSession,
+    form: Annotated[NewUser, Form()],
     render_template: RenderTemplate,
 ) -> Response:
     user = User(
@@ -51,8 +58,8 @@ async def new_user(
 
 @admin_router.get("/delete-user/{username}")
 async def delete_user(
-    admin: AdminDep,
-    db: DBSessionDep,
+    admin: Admin,
+    db: DBSession,
     username: str,
     render_template: RenderTemplate,
 ) -> Response:

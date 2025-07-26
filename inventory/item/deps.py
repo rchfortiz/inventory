@@ -3,15 +3,16 @@ from typing import Annotated
 from fastapi import Depends
 from sqlmodel import select
 
-from inventory.db.connection import DBSessionDep
+from inventory.db.connection import DBSession
 from inventory.db.models import Item
-from inventory.routes import items_redirect_exception
+
+from .redirect import redirect_to_items_exception
 
 
-def get_item(db: DBSessionDep, item_id: int) -> Item:
+def get_item(db: DBSession, item_id: int) -> Item:
     item = db.exec(select(Item).where(Item.id == item_id)).first()
     if not item:
-        raise items_redirect_exception
+        raise redirect_to_items_exception
     return item
 
 
