@@ -17,8 +17,9 @@
 
     {% if user.role >= 1 %}
     <a class="button is-secondary" href="/items/{{ item.id }}/edit">Edit</a>
-    <a class="button is-danger" href="/items/{{ item.id }}/delete">Delete</a>
-    {% endif %}
+    <button class="button is-danger"
+      onclick="if(confirm('Are you sure you want to delete this item?')) window.location = '/items/{{ item.id }}/delete'">Delete</a>
+      {% endif %}
   </section>
   <hr>
   <section>

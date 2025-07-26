@@ -30,7 +30,8 @@
 
                 {% if i_user.username != user.username %}
                 <td>
-                    <a href="/admin/delete-user/{{ i_user.username }}">Delete</a>
+                    <button class="has-text-danger"
+                        onclick="if (confirm('Are you sure you want to delete this user?')) window.location = '/admin/delete-user/{{ i_user.username }}'">Delete</a>
                 </td>
                 {% else %}
                 <td></td>
