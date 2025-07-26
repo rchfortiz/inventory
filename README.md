@@ -10,7 +10,7 @@ An inventory management system.
 2. Clone this repository.
 3. Run `docker compose up`
 
-Data will be stored in a volume named `data`.
+Visit the site at http://localhost:1773. Data will be stored in a Docker volume named `data`.
 
 ### From source
 
