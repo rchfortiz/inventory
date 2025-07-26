@@ -12,4 +12,4 @@ log_router = APIRouter(prefix="/log")
 @log_router.get("/")
 async def all_logs(_: Staff, db: DBSession, render_template: RenderTemplate) -> Response:
     logs = db.exec(select(Log).order_by(desc(Log.created_at))).all()
-    return render_template("logs/all", {"logs": logs})
+    return render_template("log/all", {"logs": logs})

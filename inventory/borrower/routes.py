@@ -11,7 +11,7 @@ from inventory.user import Staff
 
 borrower_router = APIRouter(prefix="/borrower")
 
-register_static_page(borrower_router, "/add", "borrowers/add")
+register_static_page(borrower_router, "/add", "borrower/add")
 
 
 @borrower_router.post("/add")
