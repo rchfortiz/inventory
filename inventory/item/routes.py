@@ -2,7 +2,7 @@ from datetime import datetime
 from http import HTTPStatus
 from typing import Annotated
 
-from fastapi import APIRouter, Form, Response
+from fastapi import APIRouter, Form, HTTPException, Response
 from fastapi.responses import RedirectResponse
 from pydantic import BaseModel
 from sqlmodel import select
@@ -72,6 +72,13 @@ async def item_page(item: ItemDep, render_template: RenderTemplate) -> Response:
 
 @item_router.get("/{item_id}/delete")
 async def delete_item(admin: Admin, db: DBSession, item: ItemDep) -> Response:
+    borrow_exists = db.exec(select(Borrow).where(Borrow.item_id == item.id)).first()
+    if borrow_exists:
+        raise HTTPException(
+            status_code=400,
+            detail="Item is currently borrowed and cannot be deleted.",
+        )
+
     db.delete(item)
     db.commit()
 
