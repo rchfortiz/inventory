@@ -1,53 +1,53 @@
 {% extends "base.html.jinja" %}
 {% set title = "Items" %}
 {% block content %}
-<header class="level is-mobile">
-  <div>
+  <header class="level is-mobile">
     <div>
-      <h1 class="title mb-3">Items</h1>
-      <h2 class="subtitle">There are currently {{ items|length }} items.</h2>
+      <div>
+        <h1 class="title mb-3">Items</h1>
+        <h2 class="subtitle">There are currently {{ items|length }} items.</h2>
+      </div>
     </div>
-  </div>
-</header>
+  </header>
 
-<main>
-  {% if user.role >= 1 %}
-  <a class="button is-primary mb-5" href="/items/add">Add an item</a>
-  {% endif %}
+  <main>
+    {% if user.role >= 1 %}
+      <a class="button is-primary mb-5" href="/items/add">Add an item</a>
+    {% endif %}
 
-  <table class="table is-fullwidth">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Location</th>
-        <th>Category</th>
-        <th>Status</th>
-        <th>Available</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for item in items %}
-      <tr>
-        <td>{{ item.id }}</td>
-        <td><a href="/items/{{ item.id }}">{{ item.name }}</a></td>
-        <td>{{ item.location }}</td>
-        <td>
-          {% if item.category == "Consumable Supplies" %}
-          <span class="tag is-warning">{{ item.category }}</span>
-          {% else %}
-          <span class="tag is-link">{{ item.category }}</span>
-          {% endif%}
-        </td>
-        {% if item.available_qty == 0 %}
-        <td><span class="tag is-danger">Unavailable</span></td>
-        {% else %}
-        <td><span class="tag is-success">Available</span></td>
-        {% endif %}
-        <td>{{ item.available_qty }}/{{ item.total_qty }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-</main>
+    <table class="table is-fullwidth">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Location</th>
+          <th>Category</th>
+          <th>Status</th>
+          <th>Available</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+          <tr>
+            <td>{{ item.id }}</td>
+            <td><a href="/items/{{ item.id }}">{{ item.name }}</a></td>
+            <td>{{ item.location }}</td>
+            <td>
+              {% if item.category == "Consumable Supplies" %}
+                <span class="tag is-warning">{{ item.category }}</span>
+              {% else %}
+                <span class="tag is-link">{{ item.category }}</span>
+              {% endif %}
+            </td>
+            {% if item.available_qty == 0 %}
+              <td><span class="tag is-danger">Unavailable</span></td>
+            {% else %}
+              <td><span class="tag is-success">Available</span></td>
+            {% endif %}
+            <td>{{ item.available_qty }}/{{ item.total_qty }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </main>
 {% endblock %}

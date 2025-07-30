@@ -4,4 +4,4 @@ RUN pip install uv
 COPY pyproject.toml .
 RUN uv sync
 COPY . .
-CMD [ "sh", "-c", "uv run fastapi run inventory" ]
+CMD ["sh", "-c", "uv run fastapi run inventory"]

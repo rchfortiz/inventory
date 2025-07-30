@@ -1,44 +1,51 @@
 {% extends "base.html.jinja" %}
 {% set title = 'Borrow item "' + item.name + '"' %}
 {% block content %}
-<header>
-  <h1 class="title mb-3">Borrow item "{{ item.name }}"</h1>
-  <a href="/items/{{ item.id }}">Back to item</a>
-</header>
+  <header>
+    <h1 class="title mb-3">Borrow item "{{ item.name }}"</h1>
+    <a href="/items/{{ item.id }}">Back to item</a>
+  </header>
 
-<main>
-  {% if error %}
-  <div class="notification is-danger">{{ error }}</div>
-  {% endif %}
+  <main>
+    {% if error %}
+      <div class="notification is-danger">{{ error }}</div>
+    {% endif %}
 
-  <form method="post">
-    <div class="field">
-      <label class="label">Borrower</label>
-      <div class="control select">
-        <select name="borrower_id" required>
-          {% for borrower in borrowers %}
-          <option value="{{ borrower.id }}">{{ borrower.name }}</option>
-          {% endfor %}
-        </select>
+    <form method="post">
+      <div class="field">
+        <label class="label">Borrower</label>
+        <div class="control select">
+          <select name="borrower_id" required>
+            {% for borrower in borrowers %}
+              <option value="{{ borrower.id }}">{{ borrower.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <a class="button" href="/borrower/add">Add a borrower</a>
       </div>
-      <a class="button" href="/borrower/add">Add a borrower</a>
-    </div>
 
-    <div class="field">
-      <label class="label">Due date</label>
-      <div class="control">
-        <input class="input" name="due_date" type="date" required>
+      <div class="field">
+        <label class="label">Due date</label>
+        <div class="control">
+          <input class="input" name="due_date" type="date" required>
+        </div>
       </div>
-    </div>
 
-    <div class="field">
-      <label class="label">Quantity</label>
-      <div class="control">
-        <input class="input" name="quantity" type="number" min="1" max="{{ item.available_qty }}" required>
+      <div class="field">
+        <label class="label">Quantity</label>
+        <div class="control">
+          <input
+            class="input"
+            name="quantity"
+            type="number"
+            min="1"
+            max="{{ item.available_qty }}"
+            required
+          >
+        </div>
       </div>
-    </div>
 
-    <button class="button is-primary">Save changes</button>
-  </form>
-</main>
+      <button class="button is-primary">Save changes</button>
+    </form>
+  </main>
 {% endblock %}

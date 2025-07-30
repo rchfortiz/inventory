@@ -1,73 +1,97 @@
 {% extends "base.html.jinja" %}
 {% set title = item.name %}
 {% block content %}
-<header class="mb-5">
-  <h1 class="title mb-3">{{ item.name }}</h1>
-  <a href="/items">Back to items</a>
-</header>
+  <header class="mb-5">
+    <h1 class="title mb-3">{{ item.name }}</h1>
+    <a href="/items">Back to items</a>
+  </header>
 
-<main>
-  <section>
-    <h2 class="title is-4">Actions</h2>
-    {% if item.available_qty > 0 %}
-    <a class="button is-primary" href="/items/{{ item.id }}/borrow">Borrow</a>
-    {% else %}
-    <a class="button is-primary" disabled>Cannot borrow anymore</a>
-    {% endif %}
+  <main>
+    <section>
+      <h2 class="title is-4">Actions</h2>
+      {% if item.available_qty > 0 %}
+        <a class="button is-primary" href="/items/{{ item.id }}/borrow"
+        >Borrow</a>
+      {% else %}
+        <a class="button is-primary" disabled>Cannot borrow anymore</a>
+      {% endif %}
 
-    {% if user.role >= 1 %}
-    <a class="button is-secondary" href="/items/{{ item.id }}/edit">Edit</a>
+      {% if user.role >= 1 %}
+        <a class="button is-secondary" href="/items/{{ item.id }}/edit">Edit</a>
 
-    {% if not item.borrows %}
-    <button class="button is-danger"
-      onclick="if(confirm('Are you sure you want to delete this item?')) window.location = '/items/{{ item.id }}/delete'">Delete</a>
-    {% else %}
-    <button class="button is-danger" disabled>Cannot delete while borrowed</button>
-    {% endif %}
-    {% endif %}
-  </section>
-  <hr>
-  <section>
-    <h2 class="title is-4">Item details</h2>
-    {% if item.description %}
-    <p class="my-2">{{ item.description }}</p>
-    {% endif %}
-    <p>This item is located at <strong>{{ item.location }}</strong>.</p>
-    <p>This item is part of <strong>{{ item.category }}</strong>.</p>
-    <p>There are <strong>{{ item.total_qty }}</strong> of this item <strong>either borrowed or not</strong>.</p>
-    <p>There are <strong>{{ item.available_qty }}</strong> of this item <strong>ready to borrow</strong>.</p>
-  </section>
-  <hr>
-  <section>
-    <h2 class="title is-4">Borrows</h2>
-    {% if item.borrows %}
-    <table class="table is-fullwidth">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Quantity</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for borrow in item.borrows %}
-        <tr>
-          <td>{{ borrow.borrower.name }}</td>
-          <td>{{ borrow.qty }}</td>
-          {% if borrow.is_overdue %}
-          <td><span class="tag is-danger">Overdue since {{ borrow.due_date_str }}</span></td>
-          {% else %}
-          <td><span class="tag is-success">Due on {{ borrow.due_date_str }}</span></td>
-          {% endif %}
-          <td><a href="/items/{{ item.id }}/borrows/{{ borrow.id }}/delete">Return</a></td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    {% else %}
-    <p>No borrowers yet.</p>
-    {% endif %}
-  </section>
-</main>
+        {% if not item.borrows %}
+          <button
+            class="button is-danger"
+            onclick="if(confirm('Are you sure you want to delete this item?')) window.location = '/items/{{ item.id }}/delete'"
+          >
+            Delete
+          </button>
+        {% else %}
+          <button class="button is-danger" disabled>
+            Cannot delete while borrowed
+          </button>
+        {% endif %}
+      {% endif %}
+    </section>
+    <hr>
+    <section>
+      <h2 class="title is-4">Item details</h2>
+      {% if item.description %}
+        <p class="my-2">{{ item.description }}</p>
+      {% endif %}
+      <p>This item is located at <strong>{{ item.location }}</strong>.</p>
+      <p>This item is part of <strong>{{ item.category }}</strong>.</p>
+      <p>
+        There are <strong>{{ item.total_qty }}</strong> of this item <strong
+        >either borrowed or not</strong>.
+      </p>
+      <p>
+        There are <strong>{{ item.available_qty }}</strong> of this item <strong
+        >ready to borrow</strong>.
+      </p>
+    </section>
+    <hr>
+    <section>
+      <h2 class="title is-4">Borrows</h2>
+      {% if item.borrows %}
+        <table class="table is-fullwidth">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Quantity</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for borrow in item.borrows %}
+              <tr>
+                <td>{{ borrow.borrower.name }}</td>
+                <td>{{ borrow.qty }}</td>
+                {% if borrow.is_overdue %}
+                  <td>
+                    <span class="tag is-danger">Overdue since {{
+                        borrow.due_date_str
+                      }}</span>
+                  </td>
+                {% else %}
+                  <td>
+                    <span class="tag is-success">Due on {{
+                        borrow.due_date_str
+                      }}</span>
+                  </td>
+                {% endif %}
+                <td>
+                  <a href="/items/{{ item.id }}/borrows/{{ borrow.id }}/delete"
+                  >Return</a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p>No borrowers yet.</p>
+      {% endif %}
+    </section>
+  </main>
 {% endblock %}

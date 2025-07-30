@@ -1,41 +1,41 @@
 {% extends "base.html.jinja" %}
 {% set title = "New user" %}
 {% block content %}
-<header>
-  <h1 class="title">New user</h1>
-</header>
+  <header>
+    <h1 class="title">New user</h1>
+  </header>
 
-<main>
-  {% if error %}
-  <div class="notification is-danger">{{ error }}</div>
-  {% endif %}
+  <main>
+    {% if error %}
+      <div class="notification is-danger">{{ error }}</div>
+    {% endif %}
 
-  <form method="post">
-    <div class="field">
-      <label class="label">Username</label>
-      <div class="control">
-        <input class="input" name="username" required>
+    <form method="post">
+      <div class="field">
+        <label class="label">Username</label>
+        <div class="control">
+          <input class="input" name="username" required>
+        </div>
       </div>
-    </div>
 
-    <div class="field">
-      <label class="label">Password</label>
-      <div class="control">
-        <input class="input" name="password" type="password" required>
+      <div class="field">
+        <label class="label">Password</label>
+        <div class="control">
+          <input class="input" name="password" type="password" required>
+        </div>
       </div>
-    </div>
 
-    <div class="field">
-      <label class="label">Role</label>
-      <div class="control select">
-        <select name="role" required>
-          <option value="0">Staff</option>
-          <option value="1">Admin</option>
-        </select>
+      <div class="field">
+        <label class="label">Role</label>
+        <div class="control select">
+          <select name="role" required>
+            <option value="0">Staff</option>
+            <option value="1">Admin</option>
+          </select>
+        </div>
       </div>
-    </div>
 
-    <button class="button is-primary">Create new user</button>
-  </form>
-</main>
+      <button class="button is-primary">Create new user</button>
+    </form>
+  </main>
 {% endblock %}

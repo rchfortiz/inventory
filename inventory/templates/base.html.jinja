@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{{ title }} - Inventory</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/1.0.3/css/bulma.min.css"
-    integrity="sha512-4EnjWdm80dyWrJ7rh/tlhNt6fJL52dSDSHNEqfdVmBLpJLPrRYnFa+Kn4ZZL+FRkDL5/7lAXuHylzJkpzkSM2A=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <style>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ title }} - Inventory</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bulma/1.0.3/css/bulma.min.css"
+      integrity="sha512-4EnjWdm80dyWrJ7rh/tlhNt6fJL52dSDSHNEqfdVmBLpJLPrRYnFa+Kn4ZZL+FRkDL5/7lAXuHylzJkpzkSM2A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
     :root {
       --bulma-body-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
       --bulma-block-spacing: 0.75rem;
@@ -36,26 +39,27 @@
     .gap-2 {
       gap: 0.75rem;
     }
-  </style>
-</head>
+    </style>
+  </head>
 
-<body class="container p-6 is-flex is-flex-direction-column gap-3 is-multiline">
-  <nav class="is-flex is-justify-content-space-between is-flex-wrap-wrap gap-2">
-    <span>SHS-AdC Inventory Management System</span>
+  <body class="container p-6 is-flex is-flex-direction-column gap-3 is-multiline">
+    <nav class="is-flex is-justify-content-space-between is-flex-wrap-wrap gap-2">
+      <span>SHS-AdC Inventory Management System</span>
 
-    {% if user %}
-    {% if user.role == 1 %}
-    <ul class="is-flex gap-3">
-      <li><a href="/items">Items</a></li>
-      <li><a href="/admin">Admin Page</a></li>
-      <li><a href="/log">Logs</a></li>
-    </ul>
-    {% endif %}
+      {% if user %}
+        {% if user.role == 1 %}
+          <ul class="is-flex gap-3">
+            <li><a href="/items">Items</a></li>
+            <li><a href="/admin">Admin Page</a></li>
+            <li><a href="/log">Logs</a></li>
+          </ul>
+        {% endif %}
 
-    <a class="has-text-danger" href="/user/sign-out">Sign out <code>{{ user.username }}</code></a>
-    {% endif %}
-  </nav>
-  {% block content %}{% endblock %}
-</body>
-
+        <a class="has-text-danger" href="/user/sign-out">Sign out <code>{{
+            user.username
+          }}</code></a>
+      {% endif %}
+    </nav>
+    {% block content %}{% endblock %}
+  </body>
 </html>

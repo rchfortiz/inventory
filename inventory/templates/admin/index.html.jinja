@@ -1,44 +1,48 @@
 {% extends "base.html.jinja" %}
 {% set title = "Admin" %}
 {% block content %}
-<header>
+  <header>
     <h1 class="title">Admin</h1>
-</header>
+  </header>
 
-<main>
+  <main>
     <a class="button" href="/admin/new-user">Create user</a>
 
     <hr />
 
     <table class="table is-fullwidth">
-        <thead>
-            <tr>
-                <th>Username</th>
-                <th>Role</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for i_user in users %}
-            <tr>
-                <td><code>{{ i_user.username }}</code></td>
-                {% if i_user.role == 0 %}
-                <td><span class="tag is-info">Staff</span></td>
-                {% elif i_user.role == 1 %}
-                <td><span class="tag is-danger">Admin</span></td>
-                {% endif %}
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Role</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for i_user in users %}
+          <tr>
+            <td><code>{{ i_user.username }}</code></td>
+            {% if i_user.role == 0 %}
+              <td><span class="tag is-info">Staff</span></td>
+            {% elif i_user.role == 1 %}
+              <td><span class="tag is-danger">Admin</span></td>
+            {% endif %}
 
-                {% if i_user.username != user.username %}
-                <td>
-                    <button class="has-text-danger"
-                        onclick="if (confirm('Are you sure you want to delete this user?')) window.location = '/admin/delete-user/{{ i_user.username }}'">Delete</a>
-                </td>
-                {% else %}
-                <td></td>
-                {% endif %}
-            </tr>
-            {% endfor %}
-        </tbody>
+            {% if i_user.username != user.username %}
+              <td>
+                <button
+                  class="has-text-danger"
+                  onclick="if (confirm('Are you sure you want to delete this user?')) window.location = '/admin/delete-user/{{ i_user.username }}'"
+                >
+                  Delete
+                </button>
+              </td>
+            {% else %}
+              <td></td>
+            {% endif %}
+          </tr>
+        {% endfor %}
+      </tbody>
     </table>
-</main>
+  </main>
 {% endblock %}
