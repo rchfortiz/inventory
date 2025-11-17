@@ -2,7 +2,7 @@ from datetime import UTC, datetime
 from enum import IntEnum
 from zoneinfo import ZoneInfo
 
-from sqlmodel import Field, Relationship, SQLModel
+from sqlmodel import Field, Relationship, SQLModel  # pyright: ignore[reportUnknownVariableType]
 
 
 class Role(IntEnum):
@@ -67,4 +67,4 @@ class Log(SQLModel, table=True):
 
     @property
     def created_at_str(self) -> str:
-        return self.created_at.strftime("%b %e %Y, %l:%S %p")
+        return self.created_at.strftime("%b %e %Y, %l:%M %p")
