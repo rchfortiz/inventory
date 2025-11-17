@@ -4,18 +4,8 @@ services:
     restart: unless-stopped
     volumes:
       - inventory_data:/app/data
-  
-  caddy:
-    image: caddy
-    restart: unless-stopped
     ports:
-      - 1773:80
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
-      - caddy_data:/data
-      - caddy_config:/config
+      - 1773:8000
 
 volumes:
   inventory_data:
-  caddy_data:
-  caddy_config:
